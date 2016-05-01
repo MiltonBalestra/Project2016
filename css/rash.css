@@ -20,6 +20,18 @@ Under the following terms:
 body { font-size: 12pt; }
 /* /END Font */
 
+/* URL visualization */
+
+a,span{
+    white-space: pre-wrap; /* css-3 */    
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */    
+    white-space: -o-pre-wrap; /* Opera 7 */    
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+/* /END URL visualization */
+
 /* Footnote counters */
 body { counter-reset: fn_pointer; }
 section[role=doc-footnotes] { counter-reset: fn; }
@@ -33,6 +45,11 @@ section[role=doc-footnotes] > section[role=doc-footnote]:before {
 
 /* Figure, table and formula */
 img {
+    max-width:90%;
+    height:auto;
+}
+
+svg {
     max-width:90%;
     height:auto;
 }
