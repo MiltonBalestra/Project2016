@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="grammar/rash.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" prefix="
+   schema: http://schema.org/
+   prism: http://prismstandard.org/namespaces/basic/2.0/
+   c4o: http://purl.org/spar/c4o/
+   biro: http://purl.org/spar/biro/
+   frbr: http://purl.org/vocab/frbr/core#
+   doco: http://purl.org/spar/doco/">
+    <head>
+        <title>Title of the paper</title>
+		<link href="style-article.css" rel="stylesheet" type="text/css" />
+		<meta about="#sp" name="dc.creator" content="Silvio Peroni" />
+		<meta about="#sp" property="schema:email" 
+			content="silvio.peroni@unibo.it" />
+		<link about="#sp" property="schema:affiliation" href="#cs-unibo" />
+		<meta about="#cs-unibo" property="schema:name" 
+			content="Department of Computer Science and Engineering, 
+					 University of Bologna, Bologna, Italy" />
+					 
+		<!-- Paper keywords (one or more) -->
+		<meta property="prism:keyword" content="markup language" />
+		<meta property="prism:keyword" content="HTML" />
+
+		<!-- ACM category (one or more) -->
+		<meta name="dcterms.subject" 
+			content="I.7.2,Document And Text Processing,
+					 Document Capture,Document analysis" />
+					 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
+		<script>
+			var text = '{"employees":[' +
+			'{"ref":"#prova","text":"Primo testo di prova","type":"comment" },' +
+			'{"ref":"#prova2","text":"Secondo testo di prova","type":"comment" }]}';
+			
+			//funzione per caricare i dati
+			function myFunction() {
+				data = JSON.parse(text);
+				for (var i = 0; i < data.employees.length; i++)
+					$(data.employees[i].id).text(data.employees[i].text);
+			}
+			//funzione per selezionare il testo
+			function getSelectionText() {
+				var text = "";
+				if (window.getSelection) {
+					text = window.getSelection().toString();
+					alert(text);
+				} else if (document.selection && document.selection.type != "Control") {
+					text = document.selection.createRange().text;
+					alert(text);
+				}
+				return text;
+			}
+			/* BOX SOPRA TESTO
+			$('div').on('activate', function() {
+				$(this).empty();
+				var range, sel;
+				if ( (sel = document.selection) && document.body.createTextRange) {
+					range = document.body.createTextRange();
+					range.moveToElementText(this);
+					range.select();
+				}
+			});
+			$('div').focus(function() {	
+				if (this.hasChildNodes() && document.createRange && window.getSelection) {
+					$(this).empty();
+					var range, sel;
+					range = document.createRange();
+					range.selectNodeContents(this);
+					sel = window.getSelection();
+					sel.removeAllRanges();
+					sel.addRange(range);
+				}
+			});
+			*/
+			/* TROVA ID BY CLICK
+			$(document).on('click','*',function (e) {
+				var tag = this.tagName;
+				var id = $(tag).attr('id');  // it now works
+				alert('#'+id);
+				$('#'+id).attr('class', 'comment');
+			});
+			*/
+			function createAnnotation() {
+				$.ajax({
+				   url: 'insert.php',
+				   success: function (response) 
+				   {
+					 alert(response);
+				   }
+				});
+			}
+			// funzione caricata all'apertura della pagina
+			$(document).ready(function (e) {
+				text = $("#data").html();
+				var arr = JSON.parse(text);
+				
+				for(var i=0; i < arr.length; i++){
+					var obj = arr[i];
+					alert(obj['ref']);
+					alert(obj['@type']);
+					$(obj['ref']).attr('class', obj['@type']);
+					/*
+					for(var key in obj){
+						var attrName = key;
+						var attrValue = obj[key];
+					}*/
+				}
+			});
+		</script>
+    </head>
+    <body>
+		<section>
+			<button onclick="myFunction()">Manipulate DOM</button>
+			<button onclick="getSelectionText()">Get Selected Text</button>
+			<button onclick="createAnnotation()">Create Annotation</button>
+			<p id="prova" title="Free Web tutorials">This is the text forming a paragraph</p>
+			<div contenteditable><em>Edit me</em></div>
+			
+			<!-- An ordered list (for unordered list use <ul> instead <ol>) -->
+			<ol>
+				<li><p>A list item of an ordered list.</p></li>
+			</ol>
+			
+			<blockquote><p>This is a block quotation.</p></blockquote>
+			<p>
+				The text contained in this paragraph is annotated with markup for 
+				inline elements. In particular we have <em>normal</em> and 
+				<strong>strong</strong> emphasis, <q>quotations</q>, 
+				<sup>superscripts</sup> and <sub>subscripts</sub>, 
+				<code>source code</code> and
+				<a href="https://en.wikipedia.org/wiki/Hyperlink">hyperlinks</a>.
+				In addition to pure textual elements, we can also add images, 
+				like <img src="logo.svg" alt="Picture with a logo" />, or
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+				<circle cx="8" cy="8" r="7" stroke="green" stroke-width="1" 
+				fill="yellow" /></svg>.
+				Formulas can be specified by using the MathML specification, like
+				<math xmlns="http://www.w3.org/1998/Math/MathML">
+					<mi>&#x03C0;<!-- π --></mi>
+					<mo>&#x2062;<!-- &InvisibleTimes; --></mo>
+					<msup>
+						<mi>r</mi>
+						<mn>2</mn>
+					</msup>
+				</math>, by means of an image such as 
+				<img role="math" src="formula.png" alt="r^2" />, or by using
+				LaTeX, e.g., <span role="math">\pi r^2</span>.
+			</p>
+		</section>
+    </body>
+</html>
+
+<script id="data" type=”application/ld+json”>
+	[{
+		"@context": "easyrash.json",
+		"@type": "comment",
+		"@id": "#article1",
+		"text": "The text of the comment referring to a fragment (i.e., a 'p')",
+		"ref": "#prova",
+		"author": "mailto:john@smith.com",
+		"date": "2016-01-16T11:54:26"
+	}]
+</script>
